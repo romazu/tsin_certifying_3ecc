@@ -1,0 +1,36 @@
+[tool.poetry]
+package-mode = false
+name = "tsin_certifying_3ecc"
+version = "0.1.0"
+description = "Python implementation of Tsin certifying algorithm for 3-edge-connectivity with state tracing"
+authors = ["Roman Zubov <romazu@protonmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/romazu/tsin_certifying_3ecc"
+keywords = ["graph", "3-edge-connectivity", "certifying-algorithm", "mader-sequence", "graph-decomposition"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+t4racker = "0.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
