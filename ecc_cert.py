@@ -75,6 +75,7 @@ class Solver:
         self.cnt = 1
         self.bridges: List[Edge] = []
         self.components: List[int] = []
+        self.ecc1: Dict[int, List[int]] = {}  # 1-EC component start vertex -> list of 3ECC representatives
 
         # Not necessary.
         self.virtual_edges: List[Edge] = []
@@ -90,6 +91,20 @@ class Solver:
         self.parallel_virtual_next_idx = Counter()
 
     def certifying_3_edge_connectivity(self, start_vertex: int):
+        self._run_1ecc(start_vertex)
+
+        # Continue with any unvisited vertices (for disconnected graphs)
+        for v in self.graph.keys():
+            if self.dfs[v] == 0:
+                self.trace_major_step = build_step("restart", v=v)
+                self._run_1ecc(v)
+
+        self.trace_major_step = build_step("finish")
+
+    def _run_1ecc(self, start_vertex: int):
+        """Process a single 1-edge-connected component starting from start_vertex."""
+        components_before = len(self.components)
+
         self.edge_connect_cs(start_vertex, None)
 
         # NOTE: New wrt to the paper.
@@ -108,7 +123,9 @@ class Solver:
         self.cs[start_vertex].prepend(self.p_hat[start_vertex])
         self.components.append(start_vertex)
         self.trace_mader[start_vertex] = self.materialize_component_cs_paths(start_vertex, extract_core=True)
-        self.trace_major_step = build_step("finish")
+
+        # Record which 3ECCs belong to this 1-ECC
+        self.ecc1[start_vertex] = self.components[components_before:]
 
     def edge_connect_cs(self, w, v):
         # initialization
@@ -505,7 +522,8 @@ class Solver:
             cs=self.materialize_cs_paths(extract_core=False),  # for completeness
             bridges=[[b.start, b.end] for b in self.bridges],
             cycles={c: self.cycle[c] for c in self.components if self.cycle[c]},
-            mader=self.materialize_cs_paths(extract_core=True)
+            mader=self.materialize_cs_paths(extract_core=True),
+            ecc1=self.ecc1,
         )
 
     def materialize_cs_paths(self, extract_core=True) -> Dict[int, List[List[int]]]:
@@ -709,11 +727,12 @@ if __name__ == '__main__':
     # example = examples.BchainAtRoot
 
     start_vertex = example.start_vertex
+    num_vertices = example.graph.num_vertices
 
     # Setup
     graph = build_adjacency(example.graph.num_vertices, example.graph.edges)
 
-    algo = Solver(graph, example.graph.num_vertices)
+    algo = Solver(graph, num_vertices)
 
     tracker = TTTTracker()
     tracker.register_key_converters({
@@ -745,6 +764,7 @@ if __name__ == '__main__':
         'cnt',
         'bridges',
         'components',
+        'ecc1',
 
         'virtual_edges',
 

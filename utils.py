@@ -11,6 +11,7 @@ class Decomposition:
     bridges: List[List[int]]
     cycles: Dict[int, List[List[int]]]
     mader: Dict[int, List[List[int]]]  # CS with extracted K32 core
+    ecc1: Dict[int, List[int]]
 
     def is_equal_strict(self, other: 'Decomposition') -> bool:
         """Strict equality check (order-sensitive, catches algorithm changes)."""
@@ -39,6 +40,10 @@ class Decomposition:
 
         # Compare mader dictionaries (K32 core extraction)
         if self.mader != other.mader:
+            return False
+
+        # Compare 1-edge-connected component mapping
+        if self.ecc1 != other.ecc1:
             return False
 
         return True
