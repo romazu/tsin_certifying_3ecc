@@ -725,6 +725,7 @@ if __name__ == '__main__':
     # example = examples.Tsin2_mod
     # example = examples.SimpleCycle
     # example = examples.BchainAtRoot
+    # example = examples.SimpleDisconnected
 
     start_vertex = example.start_vertex
     num_vertices = example.graph.num_vertices

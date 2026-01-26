@@ -439,6 +439,46 @@ SimpleCycle = Example(
     )
 )
 
+# Test graph: Simple disconnected (two identical 4-vertex components)
+SimpleDisconnected = Example(
+    name='simple_disconnected',
+    graph=Graph(
+        edges=[
+            [1, 2],
+            [1, 3],
+            [2, 4],
+            [3, 4],
+            [1, 4],
+
+            [5, 6],
+            [5, 7],
+            [6, 8],
+            [7, 8],
+            [5, 8],
+        ],
+        num_vertices=8
+    ),
+    start_vertex=1,
+    decomposition=Decomposition(
+        components=[3, 2, 1, 7, 6, 5],
+        sigma={3: [3], 2: [2], 1: [1, 4], 7: [7], 6: [6], 5: [5, 8]},
+        cs={
+            1: [[1, 4, 1], [1, 4]],
+            5: [[5, 8, 5], [5, 8]]
+        },
+        bridges=[],
+        cycles={
+            1: [[2], [3]],
+            5: [[6], [7]]
+        },
+        mader={
+            1: [[1, 4], [1, 4], [1, 4]],
+            5: [[5, 8], [5, 8], [5, 8]]
+        },
+        ecc1={1: [3, 2, 1], 5: [7, 6, 5]}
+    )
+)
+
 # Test graph: Bchain at root (4 vertices)
 BchainAtRoot = Example(
     name='bchain_at_root',
@@ -480,6 +520,7 @@ all_examples = [
     Tsin2_mod,
     SimpleCycle,
     BchainAtRoot,
+    SimpleDisconnected,
 ]
 
 PositionsTsin1 = {
